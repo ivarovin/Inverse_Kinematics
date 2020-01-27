@@ -5,24 +5,16 @@ public class LastIK : MonoBehaviour
     public Transform pivot, upper, forearm, effector;
     public Transform pole;
 
-    private float upperLength, forearmLength, upperToPoleLength;
-
-    private void Start()
-    {
-        upperLength = GetUpperBoneLength();
-        forearmLength = GetForearmBoneLength();
-    }
-
-    public float GetUpperBoneLength() => (forearm.position - upper.position).magnitude;
-    public float GetForearmBoneLength() => (effector.position - forearm.position).magnitude;
+    private float upperLength { get => (forearm.position - upper.position).magnitude; }
+    private float forearmLength { get => (effector.position - forearm.position).magnitude; }
+    private float upperToPoleLength { get => (pole.position - upper.position).magnitude; }
 
     private void Update()
     {
         FacePivotToPole();
 
-        upperToPoleLength = GetUpperToPoleLength();
         float upperAngle = GetAngleBetween(upperLength, upperToPoleLength, forearmLength);
-        float forearmAngle = GetAngleBetween(upperLength, forearmLength, upperToPoleLength);        
+        float forearmAngle = GetAngleBetween(upperLength, forearmLength, upperToPoleLength);
 
         if (!IsNan(upperAngle) && !IsNan(forearmAngle))
         {
@@ -32,11 +24,10 @@ public class LastIK : MonoBehaviour
     }
 
     public void FacePivotToPole() => pivot.rotation = Quaternion.LookRotation(pole.position - pivot.position);
-    public float GetUpperToPoleLength() => (pole.position - upper.position).magnitude;
 
     public float GetAngleBetween(float _adyacentA, float _adyacentB, float _oposite)
     {
-        return Mathf.Acos((Mathf.Pow (_adyacentA, 2) + Mathf.Pow (_adyacentB, 2) - Mathf.Pow (_oposite, 2))
+        return Mathf.Acos((Mathf.Pow(_adyacentA, 2) + Mathf.Pow(_adyacentB, 2) - Mathf.Pow(_oposite, 2))
             / (2 * _adyacentA * _adyacentB)) * Mathf.Rad2Deg;
     }
 
